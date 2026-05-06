@@ -1,34 +1,666 @@
-<!DOCTYPE html>
-<html lang="id">
+
+<html lang="su">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard SATU HATI Net.</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Profil Strategi SATU HATI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a; 
+            color: #f8fafc;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .font-net {
+            font-family: 'Inter', sans-serif;
+            text-transform: none !important;
+        }
+
+        /* --- Perbaikan Efek Hover Terpisah SATU & HATI --- */
+        .visi-part {
+            cursor: pointer; /* Tanda tanya (?) dileungitkeun */
+            transition: all 0.3s ease;
+            display: inline-block;
+            position: relative;
+            padding: 0 2px;
+        }
+
+        .visi-part:hover {
+            color: #fbbf24 !important;
+            transform: scale(1.1);
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        .visi-tooltip {
+            visibility: hidden;
+            width: max-content;
+            min-width: 160px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            text-align: center;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 8px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 100;
+            bottom: 140%; 
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: normal;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .visi-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(251, 191, 36, 0.4) transparent transparent transparent;
+        }
+
+        .visi-part:hover .visi-tooltip {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        /* ----------------------------------------------- */
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: auto;
+        }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            border-radius: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(6, 182, 212, 0.2);
+        }
+
+        .pricing-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            box-shadow: 0 0 30px -5px rgba(251, 191, 36, 0.15);
+        }
+
+        .text-gradient-cyan {
+            background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #fde047, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .step-line::before {
+            content: '';
+            position: absolute;
+            top: 2rem;
+            bottom: -2rem;
+            left: 1.5rem;
+            width: 2px;
+            background: linear-gradient(to bottom, #38bdf8, #10b981);
+            z-index: 0;
+        }
+
+        .step-item:last-child .step-line::before {
+            display: none;
+        }
+
+        .acronym-letter {
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+        .acronym-letter:hover {
+            color: #22d3ee;
+        }
+        .acronym-letter .tooltip {
+            visibility: hidden;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border: 1px solid #0ea5e9;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 50;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -40px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.65rem;
+            white-space: nowrap;
+            text-transform: capitalize;
+            letter-spacing: normal;
+        }
+        .acronym-letter:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Hide scrollbar for nav */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.8); }
+        }
+        .btn-wa {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
 </head>
-<body>
+<body class="antialiased selection:bg-cyan-500 selection:text-slate-900">
 
-    <div class="glass-container">
-        <header>
-            <h1 class="brand-title">SATU HATI <span class="accent">Net.</span></h1>
-            <p class="motto">"Lakukan yang termudah, yang ringan, yang terdekat, yang dikenal dan yang terbiasa."</p>
-        </header>
+    <!-- Navbar with Auth -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex overflow-x-auto no-scrollbar gap-2 w-full md:w-auto pb-1 md:pb-0">
+                <button onclick="changeLanguage('id')" class="lang-btn px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] uppercase tracking-wider font-bold transition-all border border-slate-700 hover:border-cyan-500">ID</button>
+                <button onclick="changeLanguage('su')" class="lang-btn px-3 py-1 rounded-full bg-cyan-500 text-slate-900 text-[10px] uppercase tracking-wider font-bold transition-all border border-cyan-400">SU</button>
+                <button onclick="changeLanguage('jv')" class="lang-btn px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] uppercase tracking-wider font-bold transition-all border border-slate-700 hover:border-cyan-500">JV</button>
+                <button onclick="changeLanguage('en')" class="lang-btn px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] uppercase tracking-wider font-bold transition-all border border-slate-700 hover:border-cyan-500">EN</button>
+                <button onclick="changeLanguage('ar')" class="lang-btn px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] uppercase tracking-wider font-bold transition-all border border-slate-700 hover:border-cyan-500">AR</button>
+            </div>
+            
+            <div class="flex items-center gap-3 shrink-0">
+                <button class="px-5 py-1.5 rounded-full border border-slate-600 hover:bg-slate-800 hover:text-white text-slate-300 text-xs font-bold transition-all" id="txt-nav-login" onclick="alert('Fitur Log In badé diaktifkeun engké.')">Log In</button>
+                <button class="px-5 py-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-900 text-xs font-bold transition-all shadow-[0_0_10px_rgba(6,182,212,0.3)]" id="txt-nav-register" onclick="alert('Fitur Daftar badé diaktifkeun engké.')">Daftar Akun</button>
+            </div>
+        </div>
+    </nav>
 
-        <main class="dashboard-grid">
-            <!-- Kartu Fitur 1 -->
-            <section class="card">
-                <h3>Status Koneksi</h3>
-                <div class="status-indicator">Online</div>
-            </section>
+    <header class="relative pt-36 pb-20 px-6 text-center border-b border-slate-800 overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-slate-900 z-0"></div>
+        <div class="relative z-10 max-w-4xl mx-auto animate-fade-in">
+            <div class="inline-block px-5 py-2 mb-6 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-widest shadow-lg">
+                <span id="txt-visi">Visi</span> 
+                <span class="ml-1 font-bold">
+                    <span class="text-amber-400 visi-part">
+                        SATU
+                        <div class="visi-tooltip">Selalu Allah Tujuan Utama</div>
+                    </span>
+                    <span class="text-amber-400 visi-part">
+                        HATI
+                        <div class="visi-tooltip">Hidup Aman Tentram Indah</div>
+                    </span>
+                </span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                <span id="txt-hero-1">Transformasi Mental</span><br>
+                <span class="text-gradient-cyan" id="txt-hero-2">Ti Enol Jadi Ahli</span>
+            </h1>
 
-            <!-- Kartu Fitur 2 -->
-            <section class="card">
-                <h3>Layanan</h3>
-                <p>Jual Jasa & Digital Solution</p>
-            </section>
-        </main>
-    </div>
+            <!-- Platform & Location Badges -->
+            <div class="flex flex-wrap justify-center gap-3 text-xs font-semibold text-slate-400 mb-8">
+                <span class="px-3 py-1 bg-slate-800/50 rounded-full border border-slate-700 flex items-center gap-1.5">
+                    <span class="text-red-400">📍</span> <span id="txt-loc">Rengasdengklok Selatan</span>
+                </span>
+                <span class="px-3 py-1 bg-slate-800/50 rounded-full border border-slate-700 flex items-center gap-1.5">
+                    <span class="text-green-400">📱</span> <span id="txt-mode-android">Mode Android</span>
+                </span>
+                <span class="px-3 py-1 bg-slate-800/50 rounded-full border border-slate-700 flex items-center gap-1.5">
+                    <span class="text-blue-400">🌐</span> <span id="txt-mode-browser">Mode Browser</span>
+                </span>
+            </div>
 
-    <script src="script.js"></script>
+            <div class="p-6 md:p-8 bg-slate-800/80 rounded-3xl border border-cyan-500/30 inline-block max-w-3xl mx-auto shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 text-6xl opacity-10">🕌</div>
+                <p class="text-xs text-cyan-400 font-bold uppercase tracking-widest mb-3" id="txt-profil-label">Usaha Aktif Ayeuna</p>
+                <p class="text-lg md:text-2xl text-white font-semibold leading-relaxed" id="txt-profil-desc">
+                    "Tukang Mantau CCTV & nuju nyobian damel aplikasi canggih ngamangpaatkeun Gemini AI."
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-16 space-y-24">
+
+        <section id="fokus-kegiatan">
+            <div class="mb-10 text-center md:text-left border-l-4 border-cyan-500 pl-4">
+                <h2 class="text-2xl font-bold text-white uppercase tracking-widest" id="txt-sec1-title">1. Fokus Kagiatan & Kaahlian Téknis</h2>
+                <p class="text-slate-400 mt-2 text-sm max-w-2xl" id="txt-sec1-desc">Rincian kamampuh inti anu dipibanda ayeuna minangka modal utama.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card p-8 group">
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-900/50 flex items-center justify-center text-3xl mb-6 border border-cyan-500/30 group-hover:bg-cyan-500 group-hover:text-slate-900 transition-all">
+                        📹
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3" id="txt-skill1-title">Pangawas Digital</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" id="txt-skill1-desc">
+                        Manajemen sistem <strong>CCTV Hilook Vision</strong> kalayan inténsif pikeun kaamanan lingkungan.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 group">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-900/50 flex items-center justify-center text-3xl mb-6 border border-emerald-500/30 group-hover:bg-emerald-500 group-hover:text-slate-900 transition-all">
+                        💻
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3" id="txt-skill2-title">Spésialis Software</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" id="txt-skill2-desc">
+                        Instalasi & konfigurasi sistem operasi <strong>Windows sarta Linux</strong> pikeun optimasi hardware.
+                    </p>
+                </div>
+
+                <!-- UPDATE: Gemini AI App Maker -->
+                <div class="glass-card p-8 group border-amber-500/40 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-slate-900 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase tracking-wider">New</div>
+                    <div class="w-14 h-14 rounded-2xl bg-amber-900/50 flex items-center justify-center text-3xl mb-6 border border-amber-500/50 group-hover:bg-amber-500 group-hover:text-slate-900 transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)]">
+                        🤖
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3" id="txt-skill3-title">Pangembang App AI</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed" id="txt-skill3-desc">
+                        Ngadamel aplikasi fungsional dina <strong>Android & Browser</strong> ngagunakeun kacerdasan Gemini AI.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRICING SECTION NEW -->
+        <section id="harga-jasa">
+            <div class="pricing-card rounded-3xl p-8 md:p-12 relative overflow-hidden text-center md:text-left">
+                <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10">
+                    <div class="flex-1 space-y-4">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-widest mb-2" id="txt-pricing-badge">
+                            🔥 Layanan Premium Lokal
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white leading-tight">
+                            <span id="txt-pricing-title">Jasa Damel Aplikasi<br>UMKM & Personal</span>
+                        </h2>
+                        <p class="text-slate-400 text-sm leading-relaxed max-w-lg mx-auto md:mx-0" id="txt-pricing-desc">
+                            Meryogikeun aplikasi pamasaran, kasir, atanapi profil keur usaha di Rengasdengklok? Urang tiasa ngadamelna! Tiasa diaksés dina HP Android sareng Browser laptop.
+                        </p>
+                    </div>
+
+                    <div class="flex-shrink-0 bg-slate-900/50 p-6 rounded-2xl border border-slate-700 w-full md:w-auto text-center backdrop-blur-sm">
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2" id="txt-pricing-label">Estimasi Harga (Warga Lokal)</p>
+                        <div class="text-gradient-gold text-3xl font-black mb-1">
+                            Rp 250<span class="text-xl">rb</span> - 750<span class="text-xl">rb</span>
+                        </div>
+                        <p class="text-xs text-slate-500 italic mb-6" id="txt-pricing-nego">*Tiasa disawalakeun dumasar fitur</p>
+                        
+                        <a href="https://wa.me/628561239205" target="_blank" class="btn-wa inline-flex items-center justify-center w-full gap-2 px-6 py-3 bg-green-500 hover:bg-green-400 text-slate-900 font-bold rounded-xl transition-all">
+                            <span>💬</span> <span id="txt-btn-wa">Hubungi WA: 08561239205</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analisa Usaha & Strategi remains... -->
+        <section id="analisa-usaha" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div class="space-y-6">
+                <div class="border-l-4 border-amber-500 pl-4 mb-8">
+                    <h2 class="text-2xl font-bold text-white uppercase tracking-widest" id="txt-sec2-title">Analisa Usaha Modal Leutik</h2>
+                    <p class="text-slate-400 mt-2 text-sm" id="txt-sec2-desc">Prinsip dasar wirausaha dumasar kaahlian lokal.</p>
+                </div>
+                
+                <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="bg-cyan-500 text-slate-900 w-8 h-8 rounded flex items-center justify-center font-black">🎯</div>
+                        <h3 class="text-lg font-bold text-white" id="txt-ana1-title">Target Konsumén</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 pl-12" id="txt-ana1-desc">Warga désa, santri, sarta pangurus DKM anu butuh aplikasi/jasa téknis.</p>
+                </div>
+                
+                <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="bg-emerald-500 text-slate-900 w-8 h-8 rounded flex items-center justify-center font-black">⚙️</div>
+                        <h3 class="text-lg font-bold text-white" id="txt-ana2-title">Modal Minimalis</h3>
+                    </div>
+                    <p class="text-sm text-slate-400 pl-12" id="txt-ana2-desc">Ngamimitian tina aset nu aya (Software/CCTV/Kacerdasan AI).</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 gap-6">
+                <div class="glass-card p-6">
+                    <h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-6" id="txt-chart1-label">Sebaran Target Pasar (%)</h3>
+                    <div class="chart-container">
+                        <canvas id="targetChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-16 mt-10">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            
+            <div class="mb-2">
+                <span class="text-xs font-bold text-cyan-400 tracking-[0.4em] uppercase inline-block mb-1 font-net">
+                    <span class="acronym-letter">S<span class="tooltip">Selalu</span></span>
+                    <span class="acronym-letter">A<span class="tooltip">Allah</span></span>
+                    <span class="acronym-letter">T<span class="tooltip">Tujuan</span></span>
+                    <span class="acronym-letter">U<span class="tooltip">Utama</span></span>
+                    &nbsp;
+                    <span class="acronym-letter">H<span class="tooltip">Hidup</span></span>
+                    <span class="acronym-letter">A<span class="tooltip">Aman</span></span>
+                    <span class="acronym-letter">T<span class="tooltip">Tentram</span></span>
+                    <span class="acronym-letter">I<span class="tooltip">Indah</span></span>
+                    &nbsp;
+                    <span class="acronym-letter">N<span class="tooltip">Networking</span></span>
+                    <span class="acronym-letter">e<span class="tooltip">Networking</span></span>
+                    <span class="acronym-letter">t<span class="tooltip">Networking</span></span>
+                    <span class="acronym-letter">.</span>
+                </span>
+            </div>
+            <div class="mb-6">
+                <h2 class="text-4xl md:text-5xl font-black text-white tracking-widest uppercase">RENGASDENGKLOK</h2>
+            </div>
+            
+            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent mx-auto rounded-full mb-6"></div>
+            
+            <div class="space-y-3 mb-8">
+                <p class="text-xl font-bold text-slate-300">
+                    <span class="acronym-letter">A<span class="tooltip">Abdi</span></span> 
+                    <span class="acronym-letter">Heri Setiawan<span class="tooltip">Urang Warudoyong Asli</span></span>
+                </p>
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">
+                    Visi Transformasi Mental • 2026
+                </p>
+            </div>
+
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-full border border-slate-700 text-[10px] text-slate-400 font-medium hover:border-cyan-500 transition-all">
+                <span id="txt-powered">Powered Ku</span>
+                <span class="text-cyan-400 font-bold italic">Mang Gemini AI</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            id: {
+                navLogin: "Log In",
+                navRegister: "Daftar Akun",
+                visi: "Visi",
+                hero1: "Transformasi Mental",
+                hero2: "Dari Nol Jadi Ahli",
+                loc: "Rengasdengklok Selatan",
+                modeAndroid: "Mode Android",
+                modeBrowser: "Mode Browser",
+                profilLabel: "Usaha Aktif Saat Ini",
+                profilDesc: "\"Tukang Pantau CCTV & sedang mencoba bikin aplikasi canggih menggunakan Gemini AI.\"",
+                sec1Title: "1. Fokus Kegiatan & Keahlian Teknis",
+                sec1Desc: "Rincian kemampuan inti yang dimiliki sekarang sebagai modal utama.",
+                skill1Title: "Pengawas Digital",
+                skill1Desc: "Manajemen sistem <strong>CCTV Hilook Vision</strong> secara intensif untuk keamanan lingkungan.",
+                skill2Title: "Spesialis Software",
+                skill2Desc: "Instalasi & konfigurasi sistem operasi <strong>Windows dan Linux</strong> untuk optimasi hardware.",
+                skill3Title: "Pengembang App AI",
+                skill3Desc: "Membuat aplikasi fungsional di <strong>Android & Browser</strong> menggunakan kecerdasan Gemini AI.",
+                pricingBadge: "🔥 Layanan Premium Lokal",
+                pricingTitle: "Jasa Pembuatan Aplikasi<br>UMKM & Personal",
+                pricingDesc: "Butuh aplikasi pemasaran, kasir, atau profil untuk usaha di Rengasdengklok? Kami bisa buatkan! Dapat diakses di HP Android dan Browser.",
+                pricingLabel: "Estimasi Harga (Warga Lokal)",
+                pricingNego: "*Bisa disesuaikan dengan fitur",
+                btnWa: "Hubungi WA: 08561239205",
+                sec2Title: "Analisa Usaha Modal Kecil",
+                sec2Desc: "Prinsip dasar wirausaha berdasarkan keahlian lokal.",
+                ana1Title: "Target Konsumen",
+                ana1Desc: "Warga desa, santri, serta pengurus DKM yang butuh aplikasi/jasa teknis.",
+                ana2Title: "Modal Minimalis",
+                ana2Desc: "Memulai dari aset yang ada (Software/CCTV/Kecerdasan AI).",
+                chart1: "Sebaran Target Pasar (%)",
+                powered: "Powered Ku"
+            },
+            su: {
+                navLogin: "Log In",
+                navRegister: "Daptar Akun",
+                visi: "Visi",
+                hero1: "Transformasi Mental",
+                hero2: "Ti Enol Jadi Ahli",
+                loc: "Rengasdengklok Selatan",
+                modeAndroid: "Mode Android",
+                modeBrowser: "Mode Browser",
+                profilLabel: "Usaha Aktif Ayeuna",
+                profilDesc: "\"Tukang Mantau CCTV & nuju nyobian damel aplikasi canggih ngamangpaatkeun Gemini AI.\"",
+                sec1Title: "1. Fokus Kagiatan & Kaahlian Téknis",
+                sec1Desc: "Rincian kamampuh inti anu dipibanda ayeuna minangka modal utama.",
+                skill1Title: "Pangawas Digital",
+                skill1Desc: "Manajemen sistem <strong>CCTV Hilook Vision</strong> kalayan inténsif pikeun kaamanan lingkungan.",
+                skill2Title: "Spésialis Software",
+                skill2Desc: "Instalasi & konfigurasi sistem operasi <strong>Windows sarta Linux</strong> pikeun optimasi hardware.",
+                skill3Title: "Pangembang App AI",
+                skill3Desc: "Ngadamel aplikasi fungsional dina <strong>Android & Browser</strong> ngagunakeun kacerdasan Gemini AI.",
+                pricingBadge: "🔥 Layanan Premium Lokal",
+                pricingTitle: "Jasa Damel Aplikasi<br>UMKM & Personal",
+                pricingDesc: "Meryogikeun aplikasi pamasaran, kasir, atanapi profil keur usaha di Rengasdengklok? Urang tiasa ngadamelna! Tiasa diaksés dina HP Android sareng Browser.",
+                pricingLabel: "Estimasi Harga (Warga Lokal)",
+                pricingNego: "*Tiasa disawalakeun dumasar fitur",
+                btnWa: "Hubungi WA: 08561239205",
+                sec2Title: "Analisa Usaha Modal Leutik",
+                sec2Desc: "Prinsip dasar wirausaha dumasar kaahlian lokal.",
+                ana1Title: "Target Konsumén",
+                ana1Desc: "Warga désa, santri, sarta pangurus DKM anu butuh aplikasi/jasa téknis.",
+                ana2Title: "Modal Minimalis",
+                ana2Desc: "Ngamimitian tina aset nu aya (Software/CCTV/Kacerdasan AI).",
+                chart1: "Sebaran Target Pasar (%)",
+                powered: "Powered Ku"
+            },
+            jv: {
+                navLogin: "Mlebu",
+                navRegister: "Daftar Akun",
+                visi: "Visi",
+                hero1: "Transformasi Mental",
+                hero2: "Soko Nol Dadi Ahli",
+                loc: "Rengasdengklok Kidul",
+                modeAndroid: "Mode Android",
+                modeBrowser: "Mode Browser",
+                profilLabel: "Usaha Aktif Saiki",
+                profilDesc: "\"Tukang Mantau CCTV & lagi nyoba nggawe aplikasi canggih nganggo Gemini AI.\"",
+                sec1Title: "1. Fokus Kegiatan & Keahlian Teknis",
+                sec1Desc: "Rincian kemampuan inti sing diduweni saiki minangka modal utama.",
+                skill1Title: "Pengawas Digital",
+                skill1Desc: "Manajemen sistem <strong>CCTV Hilook Vision</strong> kanthi intensif kanggo keamanan lingkungan.",
+                skill2Title: "Spesialis Software",
+                skill2Desc: "Instalasi & konfigurasi sistem operasi <strong>Windows lan Linux</strong> kanggo optimasi hardware.",
+                skill3Title: "Pengembang App AI",
+                skill3Desc: "Nggawe aplikasi fungsional ing <strong>Android & Browser</strong> nggunakake kecerdasan Gemini AI.",
+                pricingBadge: "🔥 Layanan Premium Lokal",
+                pricingTitle: "Jasa Nggawe Aplikasi<br>UMKM & Personal",
+                pricingDesc: "Butuh aplikasi pemasaran, kasir, utawa profil kanggo usaha ing Rengasdengklok? Kene bisa gawe! Bisa diakses ing HP Android lan Browser.",
+                pricingLabel: "Estimasi Harga (Warga Lokal)",
+                pricingNego: "*Bisa dirembug manut fiture",
+                btnWa: "Hubungi WA: 08561239205",
+                sec2Title: "Analisa Usaha Modal Cilik",
+                sec2Desc: "Prinsip dhasar wirausaha adhedhasar keahlian lokal.",
+                ana1Title: "Target Konsumen",
+                ana1Desc: "Warga desa, santri, lan pengurus DKM sing butuh aplikasi/jasa teknis.",
+                ana2Title: "Modal Minimalis",
+                ana2Desc: "Miwiti saka aset sing wis ana (Software/CCTV/Kecerdasan AI).",
+                chart1: "Sebaran Target Pasar (%)",
+                powered: "Powered Ku"
+            },
+            en: {
+                navLogin: "Log In",
+                navRegister: "Sign Up",
+                visi: "Vision",
+                hero1: "Mental Transformation",
+                hero2: "From Zero to Hero",
+                loc: "South Rengasdengklok",
+                modeAndroid: "Android Mode",
+                modeBrowser: "Browser Mode",
+                profilLabel: "Current Active Business",
+                profilDesc: "\"CCTV Monitor & currently trying to build advanced apps using Gemini AI.\"",
+                sec1Title: "1. Focus Activities & Technical Skills",
+                sec1Desc: "Detailed core competencies held as primary capital.",
+                skill1Title: "Digital Surveillance",
+                skill1Desc: "Intensive <strong>CCTV Hilook Vision</strong> system management for environmental security.",
+                skill2Title: "Software Specialist",
+                skill2Desc: "Installation & configuration of <strong>Windows and Linux</strong> operating systems for hardware optimization.",
+                skill3Title: "AI App Developer",
+                skill3Desc: "Building functional applications on <strong>Android & Browser</strong> using Gemini AI intelligence.",
+                pricingBadge: "🔥 Local Premium Service",
+                pricingTitle: "App Development Service<br>MSME & Personal",
+                pricingDesc: "Need a marketing, cashier, or profile app for your business in Rengasdengklok? We can build it! Accessible on Android phones and Browsers.",
+                pricingLabel: "Estimated Price (Locals)",
+                pricingNego: "*Negotiable based on features",
+                btnWa: "Contact WA: 08561239205",
+                sec2Title: "Small Capital Business Analysis",
+                sec2Desc: "Basic entrepreneurship principles based on local expertise.",
+                ana1Title: "Target Consumer",
+                ana1Desc: "Villagers, students, and mosque committees needing apps/technical services.",
+                ana2Title: "Minimalist Capital",
+                ana2Desc: "Starting from existing assets (Software/CCTV/AI Intelligence).",
+                chart1: "Market Target Distribution (%)",
+                powered: "Powered By"
+            },
+            ar: {
+                navLogin: "تسجيل الدخول",
+                navRegister: "إنشاء حساب",
+                visi: "رؤية",
+                hero1: "التحول العقلي",
+                hero2: "من الصفر إلى الاحتراف",
+                loc: "جنوب رينغاسدينغكلوك",
+                modeAndroid: "وضع الأندرويد",
+                modeBrowser: "وضع المتصفح",
+                profilLabel: "الأعمال النشطة الحالية",
+                profilDesc: "\"مراقب كاميرات المراقبة ويحاول حاليًا بناء تطبيقات متقدمة باستخدام Gemini AI.\"",
+                sec1Title: "1. الأنشطة والمهارات التقنية",
+                sec1Desc: "تفصيل الكفاءات الأساسية كقاعدة انطلاق.",
+                skill1Title: "المراقبة الرقمية",
+                skill1Desc: "إدارة نظام <strong>CCTV Hilook Vision</strong> بشكل مكثف لأمن المنطقة.",
+                skill2Title: "خبير البرمجيات",
+                skill2Desc: "تثبيت وتكوين أنظمة تشغيل <strong>Windows و Linux</strong> لتحسين الأجهزة.",
+                skill3Title: "مطور تطبيقات الذكاء الاصطناعي",
+                skill3Desc: "بناء تطبيقات وظيفية على <strong>Android ومتصفح الويب</strong> باستخدام ذكاء Gemini AI.",
+                pricingBadge: "🔥 خدمة محلية مميزة",
+                pricingTitle: "خدمة تطوير التطبيقات<br>للشركات الصغيرة والأفراد",
+                pricingDesc: "هل تحتاج إلى تطبيق تسويق أو صراف أو ملف شخصي لعملك في Rengasdengklok؟ يمكننا بنائه! يمكن الوصول إليه على هواتف Android والمتصفحات.",
+                pricingLabel: "السعر التقديري (للسكان المحليين)",
+                pricingNego: "*قابل للتفاوض بناءً على الميزات",
+                btnWa: "تواصل عبر واتساب: 08561239205",
+                sec2Title: "تحليل الأعمال برأس مال صغير",
+                sec2Desc: "مبادئ ريادة الأعمال الأساسية القائمة على الخبرة المحلية.",
+                ana1Title: "المستهلك المستهدف",
+                ana1Desc: "أهالي القرية والطلاب ولجان المساجد الذين يحتاجون لتطبيقات/خدمات تقنية.",
+                ana2Title: "رأس مال بسيط",
+                ana2Desc: "البدء بالأصول المتاحة (البرمجيات/الكاميرات/الذكاء الاصطناعي).",
+                chart1: "توزيع السوق المستهدف (%)",
+                powered: "بواسطة"
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang];
+            document.getElementById('txt-nav-login').innerText = t.navLogin;
+            document.getElementById('txt-nav-register').innerText = t.navRegister;
+            document.getElementById('txt-visi').innerText = t.visi;
+            document.getElementById('txt-hero-1').innerText = t.hero1;
+            document.getElementById('txt-hero-2').innerText = t.hero2;
+            document.getElementById('txt-loc').innerText = t.loc;
+            document.getElementById('txt-mode-android').innerText = t.modeAndroid;
+            document.getElementById('txt-mode-browser').innerText = t.modeBrowser;
+            document.getElementById('txt-profil-label').innerText = t.profilLabel;
+            document.getElementById('txt-profil-desc').innerText = t.profilDesc;
+            document.getElementById('txt-sec1-title').innerText = t.sec1Title;
+            document.getElementById('txt-sec1-desc').innerText = t.sec1Desc;
+            document.getElementById('txt-skill1-title').innerText = t.skill1Title;
+            document.getElementById('txt-skill1-desc').innerHTML = t.skill1Desc;
+            document.getElementById('txt-skill2-title').innerText = t.skill2Title;
+            document.getElementById('txt-skill2-desc').innerHTML = t.skill2Desc;
+            document.getElementById('txt-skill3-title').innerText = t.skill3Title;
+            document.getElementById('txt-skill3-desc').innerHTML = t.skill3Desc;
+            document.getElementById('txt-pricing-badge').innerText = t.pricingBadge;
+            document.getElementById('txt-pricing-title').innerHTML = t.pricingTitle;
+            document.getElementById('txt-pricing-desc').innerText = t.pricingDesc;
+            document.getElementById('txt-pricing-label').innerText = t.pricingLabel;
+            document.getElementById('txt-pricing-nego').innerText = t.pricingNego;
+            document.getElementById('txt-btn-wa').innerText = t.btnWa;
+            document.getElementById('txt-sec2-title').innerText = t.sec2Title;
+            document.getElementById('txt-sec2-desc').innerText = t.sec2Desc;
+            document.getElementById('txt-ana1-title').innerText = t.ana1Title;
+            document.getElementById('txt-ana1-desc').innerText = t.ana1Desc;
+            document.getElementById('txt-ana2-title').innerText = t.ana2Title;
+            document.getElementById('txt-ana2-desc').innerText = t.ana2Desc;
+            document.getElementById('txt-chart1-label').innerText = t.chart1;
+            document.getElementById('txt-powered').innerText = t.powered;
+
+            document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            document.body.style.textAlign = (lang === 'ar') ? 'right' : 'left';
+            if (lang === 'ar') {
+                document.querySelector('header').style.textAlign = 'center';
+                document.querySelector('footer').style.textAlign = 'center';
+            }
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-slate-900', 'border-cyan-400');
+                btn.classList.add('bg-slate-800', 'text-slate-400', 'border-slate-700');
+            });
+            event.target.classList.remove('bg-slate-800', 'text-slate-400', 'border-slate-700');
+            event.target.classList.add('bg-cyan-500', 'text-slate-900', 'border-cyan-400');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctxTarget = document.getElementById('targetChart').getContext('2d');
+            new Chart(ctxTarget, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Warga Umum', 'Pengurus DKM', 'Santri'],
+                    datasets: [{
+                        data: [50, 30, 20],
+                        backgroundColor: ['#06b6d4', '#10b981', '#f59e0b'],
+                        borderColor: '#1e293b',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 11 } } }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
