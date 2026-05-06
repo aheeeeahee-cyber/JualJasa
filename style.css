@@ -1,0 +1,47 @@
+/* Dasar Halaman */
+body {
+    background: linear-gradient(135deg, #800000, #000000); /* Merah Hati ke Hitam */
+    color: white;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Efek Kaca (Glassmorphism) */
+.glass-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    width: 80%;
+    max-width: 800px;
+}
+
+/* Warna Branding */
+.brand-title {
+    color: #ffffff; /* Putih bercahaya */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.accent {
+    color: #FFD700; /* Kuning Emas */
+}
+
+.motto {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #f0f0f0;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    border-left: 5px solid #FFD700; /* Aksen Emas */
+}
